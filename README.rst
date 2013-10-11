@@ -17,6 +17,7 @@ Fix django-taggit-classy-templatetags
     almost done, needs tests
     
 Fix translated tags using taggit
+
     started
     subclass tags from django-taggit-classy-templatetags?
     needs tests
