@@ -17,4 +17,4 @@ settings = {
 testsetup = TestSetup(appname='hvad_blog', settings=settings)
 
 if __name__ == '__main__':
-    testsetup.run('shell')
+    testsetup.run(__file__)
