@@ -1,8 +1,6 @@
 #!/usr/bin/env python
 
-import sys
-import os
-
+import hvad_blog
 from djeasytests.testsetup import TestSetup
 
 settings = {
@@ -14,7 +12,7 @@ settings = {
         }
     }
     
-testsetup = TestSetup(appname='hvad_blog', settings=settings)
+testsetup = TestSetup(appname='hvad_blog', settings=settings, version=hvad_blog.get_version())
 
 if __name__ == '__main__':
     testsetup.run(__file__)
