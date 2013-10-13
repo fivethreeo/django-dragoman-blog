@@ -29,22 +29,18 @@ Fix translated tags using taggit
 
 --
 
-To join in development:
+To join in development::
     
     git clone https://github.com/fivethreeo/django-hvad-blog.git
-    
     cd django-hvad-blog
     
     virtualenv --system-site-packages env
-    
     env/bin/activate
-    
     pip install -r testing/requirements/django-1.5.txt
     
     python develop.py test
     
     python develop.py manage syncdb --noinput
-    
     python develop.py server
     
     http://127.0.0.1:8000/admin/
