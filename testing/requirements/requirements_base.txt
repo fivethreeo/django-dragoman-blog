@@ -1,0 +1,6 @@
+-e git+https://github.com/fivethreeo/django-easytests.git@develop#egg=django-easytests
+-e git+https://github.com/fivethreeo/django-taggit-classy-templatetags.git#egg=django-taggit-classy-templatetags
+django-taggit
+django-hvad
+docopt
+dj-database-url

@@ -4,29 +4,27 @@ python:
     - 2.7
     - 3.3
 env:
-    - DJANGO=1.5 DB='sqlite://localhost/:memory:'
-    - DJANGO=1.5 DB='mysql://root@127.0.0.1/ hvadblog_test'
-    - DJANGO=1.5 DB='postgres://postgres@127.0.0.1/ hvadblog_test'
-    - DJANGO=trunk DB='sqlite://localhost/:memory:'
-    - DJANGO=trunk DB='mysql://root@127.0.0.1/ hvadblog_test'
-    - DJANGO=trunk DB='postgres://postgres@127.0.0.1/ hvadblog_test'
+    - DJANGO=1.5 DATABASE_URL='sqlite://localhost/:memory:'
+    - DJANGO=1.5 DATABASE_URL='mysql://root@127.0.0.1/ hvadblog_test'
+    - DJANGO=1.5 DATABASE_URL='postgres://postgres@127.0.0.1/ hvadblog_test'
+    - DJANGO=trunk DATABASE_URL='sqlite://localhost/:memory:'
+    - DJANGO=trunk DATABASE_URL='mysql://root@127.0.0.1/ hvadblog_test'
+    - DJANGO=trunk DATABASE_URL='postgres://postgres@127.0.0.1/ hvadblog_test'
     
 before_script:
-  - sh -c "if [ '$DB' = 'postgres://postgres@127.0.0.1/ hvadblog_test' ]; then psql -c 'DROP DATABASE IF EXISTS hvadblog_test;' -U postgres; fi"
-  - sh -c "if [ '$DB' = 'postgres://postgres@127.0.0.1/ hvadblog_test' ]; then psql -c 'create database hvadblog_test;' -U postgres; fi"
-  - sh -c "if [ '$DB' = 'mysql://root@127.0.0.1/ hvadblog_test' ]; then mysql -e 'create database IF NOT EXISTS hvadblog_test CHARACTER SET utf8 COLLATE utf8_general_ci;'; fi"
+  - sh -c "if [ '$DATABASE_URL' = 'postgres://postgres@127.0.0.1/ hvadblog_test' ]; then psql -c 'DROP DATABASE IF EXISTS hvadblog_test;' -U postgres; fi"
+  - sh -c "if [ '$DATABASE_URL' = 'postgres://postgres@127.0.0.1/ hvadblog_test' ]; then psql -c 'create database hvadblog_test;' -U postgres; fi"
+  - sh -c "if [ '$DATABASE_URL' = 'mysql://root@127.0.0.1/ hvadblog_test' ]; then mysql -e 'create database IF NOT EXISTS hvadblog_test CHARACTER SET utf8 COLLATE utf8_general_ci;'; fi"
 
 install:
-    - export DISPLAY=:99.0
-    - sh -e /etc/init.d/xvfb start
     - pip install -q -r "test_requirements/django-$DJANGO.txt" --use-mirrors
-    - if [ $DB == 'mysql://root@127.0.0.1/ hvadblog_test' ]; then pip install -q mysql-python --use-mirrors; fi
+    - if [ $DATABASE_URL == 'mysql://root@127.0.0.1/ hvadblog_test' ]; then pip install -q mysql-python --use-mirrors; fi
 script:
-    python develop.py --db $DB
+    python develop.py test
 
 matrix:
   exclude:
     - python: 3.3
-      env: DJANGO=1.5 DB='mysql://root@127.0.0.1/ hvadblog_test'
+      env: DJANGO=1.5 DATABASE_URL='mysql://root@127.0.0.1/ hvadblog_test'
     - python: 3.3
-      env: DJANGO=trunk DB='mysql://root@127.0.0.1/ hvadblog_test'
+      env: DJANGO=trunk DATABASE_URL='mysql://root@127.0.0.1/ hvadblog_test'

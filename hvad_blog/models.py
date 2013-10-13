@@ -1,3 +1,6 @@
+import datetime
+
+from django.utils.translation import ugettext as _
 from django.utils.translation import get_language
 
 from django.db import models
@@ -13,18 +16,19 @@ except ImportError:
     
 class TranslationTagged(GenericTaggedItemBase):
     
+    tag = models.ForeignKey('taggit.Tag', related_name="%(app_label)s_%(class)s_items")
     language_code = models.CharField(max_length=15, db_index=True)
     
     @classmethod
     def lookup_kwargs(cls, instance):
-        return dict(language=instance.language_code, **super(cls).lookup_kwargs(instance))
+        return dict(language_code=instance.language_code, **GenericTaggedItemBase.lookup_kwargs(instance))
 
     @classmethod
     def bulk_lookup_kwargs(cls, instances):
         if isinstance(instances, QuerySet):
-            return dict(language_code=instances._language_code, **super(cls).bulk_lookup_kwargs(instances))
+            return dict(language_code=instances._language_code, **GenericTaggedItemBase.bulk_lookup_kwargs(instances))
         else:
-            return dict(language_code=instances[0].language_code, **super(cls).bulk_lookup_kwargs(instances))
+            return dict(language_code=instances[0].language_code, **GenericTaggedItemBase.bulk_lookup_kwargs(instances))
 
     @classmethod
     def tags_for(cls, model, instance=None):
@@ -42,12 +46,12 @@ class TranslationTagged(GenericTaggedItemBase):
 class Entry(TranslatableModel):
 
     translations = TranslatedFields(
-        is_published = models.BooleanField(_('is published'))
-        pub_date = models.DateTimeField(_('publish at'), default=datetime.datetime.now)
+        is_published = models.BooleanField(_('is published')),
+        pub_date = models.DateTimeField(_('publish at'), default=datetime.datetime.now),
          
-        title = models.CharField(_('title'), max_length=255)
-        slug = models.SlugField(_('slug'), max_length=255)
-        author = models.ForeignKey('auth.User', null=True, blank=True, verbose_name=_("author"))
+        title = models.CharField(_('title'), max_length=255),
+        slug = models.SlugField(_('slug'), max_length=255),
+        author = models.ForeignKey('auth.User', null=True, blank=True, verbose_name=_("author")),
         tags = TaggableManager(through=TranslationTagged)
     )
 

@@ -2,23 +2,40 @@ Docs can be found at http://django-hvad-blog.readthedocs.org/
 
 Translation project at transifex: http://www.transifex.net/projects/p/django-hvad-blog/
 
-Todo:
+django-easytests
 
-Fix django-easytests
-
-* started
-* put test modules, testing apps/projects in tests/
-* reusable test utils for 3rd party in hvad_blog/test_utils/
+* put apps/projects in testing/
+* reusable test utils for 3rd party in hvad_blog/test_utils/ if needed
 * see requirements and develop.py
     
+Todo:
+
 Fix django-taggit-classy-templatetags
 
 * started
-* almost done, needs tests
+* rename module, taggit_classy?
+* design decisions and needs tests
+* use django-essytests
     
 Fix translated tags using taggit
 
-* started
 * subclass tags from django-taggit-classy-templatetags?
 * needs tests
-* use django-easytests?
+
+--
+
+To join in development
+
+git clone https://github.com/fivethreeo/django-hvad-blog.git
+cd django-hvad-blog
+
+virtualenv --system-site-packages env
+env/bin/activate
+pip install -r testing/requirements/django-1.5.txt
+
+python develop.py test
+
+python develop.py manage syncdb --noinput
+python develop.py server
+
+http://127.0.0.1:8000/admin/
