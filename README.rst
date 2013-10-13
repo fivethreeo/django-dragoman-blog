@@ -10,17 +10,22 @@ django-easytests
     
 Todo:
 
+* tests
+* docs
+* work
+
 Fix django-taggit-classy-templatetags
 
 * started
 * rename module, taggit_classy?
-* design decisions and needs tests
-* use django-essytests
+* design decisions and needs new tests
+* use django-easytests
     
 Fix translated tags using taggit
 
 * subclass tags from django-taggit-classy-templatetags?
 * needs tests
+
 
 --
 
