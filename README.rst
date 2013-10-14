@@ -25,7 +25,7 @@ Todo:
 subclass generics for language filtering
 ========================================
 
-Has to filter on the translated model
+Testing needed
 
 django-cms integration
 ======================

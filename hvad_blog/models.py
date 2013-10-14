@@ -2,7 +2,7 @@ import datetime
 
 from django.utils.translation import ugettext as _
 from django.utils.translation import get_language
-
+from django.utils import timezone
 from django.db import models
 from hvad.models import TranslatableModel, TranslatedFields
 
@@ -47,7 +47,7 @@ class Entry(TranslatableModel):
 
     translations = TranslatedFields(
         is_published = models.BooleanField(_('is published')),
-        pub_date = models.DateTimeField(_('publish at'), default=datetime.datetime.now),
+        pub_date = models.DateTimeField(_('publish at'), default=timezone.now),
          
         title = models.CharField(_('title'), max_length=255),
         slug = models.SlugField(_('slug'), max_length=255),
@@ -56,17 +56,19 @@ class Entry(TranslatableModel):
     )
 
     def _get_absolute_url(self):
-        if timezone:
-            local_pub_date = timezone.localtime(self.pub_date)
-        else:
-            local_pub_date = self.pub_date
+        pub_date = self.lazy_translation_getter('pub_date', None)
+        slug = self.lazy_translation_getter('slug', None)
 
-        return ('hvad_blog_detail', (), {
-            'year': local_pub_date.year,
-            'month': local_pub_date.strftime('%m'),
-            'day': local_pub_date.strftime('%d'),
-            'slug': self.slug
-        })
+        if pub_date and slug:
+            local_pub_date = timezone.localtime(pub_date)
+    
+            return ('hvad_blog_detail', (), {
+                'year': local_pub_date.year,
+                'month': local_pub_date.strftime('%m'),
+                'day': local_pub_date.strftime('%d'),
+                'slug': self.slug
+            })
+        return ('hvad_blog_archive_index', (), {})
     get_absolute_url = models.permalink(_get_absolute_url)
     
     def __unicode__(self):
