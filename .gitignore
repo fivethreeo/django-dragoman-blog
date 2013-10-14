@@ -22,3 +22,6 @@ pip-log.txt
 
 # Unit test / coverage reports
 .coverage
+
+local.sqlite
+setenv.bat
