@@ -4,9 +4,9 @@ django-hvad-blog
 
 A internationalized blog using django-hvad.
 
-Docs can be found at http://django-hvad-blog.readthedocs.org/ 
+Todo: Docs can be found at http://django-hvad-blog.readthedocs.org/ 
 
-Translation project at transifex: http://www.transifex.net/projects/p/django-hvad-blog/
+Todo: Translation project at transifex: http://www.transifex.net/projects/p/django-hvad-blog/
 
 django-easytests
 -----------------
@@ -22,15 +22,21 @@ Todo:
 * docs
 * work
 
-Fix django-taggit-classy-templatetags
-=====================================
+django-cms integration
+======================
+
+App with apphook and plugins, replaced model with placeholder(s).
+Abstract model + default model ala django-shop, hooks for model replacement.
+
+django-taggit-classy-templatetags
+=================================
 
 * rename module, taggit_classy
 * design decisions and needs new tests
 * use django-easytests
     
-Fix translated tags using taggit
-================================
+translated tags using taggit
+============================
 
 * add a language arg to templatetag?
 * needs tests
