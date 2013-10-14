@@ -1,36 +1,45 @@
+================
+django-hvad-blog
+================
+
+A internationalized blog using django-hvad.
+
 Docs can be found at http://django-hvad-blog.readthedocs.org/ 
 
 Translation project at transifex: http://www.transifex.net/projects/p/django-hvad-blog/
 
 django-easytests
+-----------------
 
 * put apps/projects in testing/
 * reusable test utils for 3rd party in hvad_blog/test_utils/ if needed
 * see requirements and develop.py
     
 Todo:
+-----
 
 * tests
 * docs
 * work
 
 Fix django-taggit-classy-templatetags
+=====================================
 
-* started
-* rename module, taggit_classy?
+* rename module, taggit_classy
 * design decisions and needs new tests
 * use django-easytests
     
 Fix translated tags using taggit
+================================
 
-* subclass tags from django-taggit-classy-templatetags?
+* add a language arg to templatetag?
 * needs tests
 
+To join in development
+----------------------
 
---
+::
 
-To join in development::
-    
     git clone https://github.com/fivethreeo/django-hvad-blog.git
     cd django-hvad-blog
     
