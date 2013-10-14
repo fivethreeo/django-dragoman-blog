@@ -13,7 +13,7 @@ django-easytests
 
 * put apps/projects in testing/
 * reusable test utils for 3rd party in hvad_blog/test_utils/ if needed
-* see requirements and develop.py
+* see develop.py
     
 Todo:
 -----
