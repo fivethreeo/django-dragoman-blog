@@ -1,9 +1,36 @@
 from django.conf.urls import url, patterns
 
-from django.views.generic.dates import DateDetailView, ArchiveIndexView, YearArchiveView, MonthArchiveView, DayArchiveView
 # from hvad_blog.feeds import EntriesFeed, TaggedEntriesFeed, AuthorEntriesFeed
-
 from hvad_blog.models import Entry
+
+from django.utils.translation import get_language
+from django.views.generic.dates import DateDetailView, ArchiveIndexView, YearArchiveView, MonthArchiveView, DayArchiveView
+
+class EntryDateDetail(DateDetailView):
+    
+    def get_queryset(self):
+        return super(EntryDateDetail, self).get_queryset().filter(language_code=get_language())
+        
+class EntryArchiveIndex(ArchiveIndexView):
+    
+    def get_queryset(self):
+        return super(EntryArchiveIndex, self).get_queryset().filter(language_code=get_language())
+        
+class EntryYearArchive(YearArchiveView):
+    
+    def get_queryset(self):
+        return super(EntryYearArchive, self).get_queryset().filter(language_code=get_language())
+        
+class EntryMonthArchive(MonthArchiveView):
+    
+    def get_queryset(self):
+        return super(EntryMonthArchive, self).get_queryset().filter(language_code=get_language())
+        
+class EntryDayArchive(DayArchiveView):
+    
+    def get_queryset(self):
+        return super(EntryDayArchive, self).get_queryset().filter(language_code=get_language())
+        
 
 blog_info_dict = {
     'queryset': Entry.translations.related.model.objects.all(),
@@ -12,7 +39,7 @@ blog_info_dict = {
     'paginate_by': 15,
 }
 
-blog_detail = DateDetailView.as_view(
+blog_detail = EntryDateDetail.as_view(
     queryset=Entry.translations.related.model.objects.all(),
     date_field='pub_date',
     month_format='%m',
@@ -20,15 +47,15 @@ blog_detail = DateDetailView.as_view(
 )
 
 urlpatterns = patterns('',
-    url(r'^$', ArchiveIndexView.as_view(**blog_info_dict), name='hvad_blog_archive_index'),
+    url(r'^$', EntryArchiveIndex.as_view(**blog_info_dict), name='hvad_blog_archive_index'),
     
-    url(r'^(?P<year>\d{4})/$', YearArchiveView.as_view(**blog_info_dict), name='hvad_blog_archive_year'),
+    url(r'^(?P<year>\d{4})/$', EntryYearArchive.as_view(**blog_info_dict), name='hvad_blog_archive_year'),
     
     url(r'^(?P<year>\d{4})/(?P<month>\d{2})/$',
-        MonthArchiveView.as_view(month_format='%m', **blog_info_dict), name='hvad_blog_archive_month'),
+        EntryMonthArchive.as_view(month_format='%m', **blog_info_dict), name='hvad_blog_archive_month'),
     
     url(r'^(?P<year>\d{4})/(?P<month>\d{2})/(?P<day>\d{2})/$',
-        DayArchiveView.as_view(month_format='%m', **blog_info_dict), name='hvad_blog_archive_day'),
+        EntryDayArchive.as_view(month_format='%m', **blog_info_dict), name='hvad_blog_archive_day'),
     
     url(r'^(?P<year>\d{4})/(?P<month>\d{2})/(?P<day>\d{2})/(?P<slug>[-\w]+)/$',
         blog_detail, name='hvad_blog_detail')
