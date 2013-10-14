@@ -1,0 +1,14 @@
+{% extends "hvad_blog/hvad_blog_base.html" %}
+{% load i18n %}
+
+{% block content %}
+
+<h1>{% trans "Latest entries" %}</h1>
+
+{% if object_list %}
+   {% include "hvad_blog/entrytranslation_list_include.html" %}
+{% else %}
+	<p>{% trans "No entries" %}</p>
+{% endif %}
+
+{% endblock %}

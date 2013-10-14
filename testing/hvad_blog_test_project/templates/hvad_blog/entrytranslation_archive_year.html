@@ -1,0 +1,15 @@
+{% extends "hvad_blog/hvad_blog_base.html" %}
+{% load i18n %}
+
+{% block content %}
+
+<h1>{% trans "Entries for" %} {{ year }}</h1>
+<ul>
+    {% for date in date_list %}
+        <li><a href="{% url 'hvad_blog_archive_month' year=year|date:'Y' month=date|date:'m'  %}">{{ date|date:"F" }}</a></li>
+    {% empty %}
+        <li>{% trans "No entries for this year" %}</li>
+    {% endfor %}
+</ul>
+
+{% endblock %}

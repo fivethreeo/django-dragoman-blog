@@ -1,0 +1,12 @@
+{% extends "hvad_blog/hvad_blog_base.html" %}
+{% load i18n %}
+
+{% block content %}
+
+
+<h1>{{ object.title }}</h1>
+
+<p class="date"><span>{{ object.pub_date|date:"d F Y" }}</span></p>
+
+
+{% endblock %}
