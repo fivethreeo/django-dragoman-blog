@@ -22,6 +22,11 @@ Todo:
 * docs
 * work
 
+subclass generics for language filtering
+========================================
+
+Has to filter on the translated model
+
 django-cms integration
 ======================
 

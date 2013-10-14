@@ -20,6 +20,7 @@ settings = {
         'hvad'
     ],
     'ROOT_URLCONF': 'hvad_blog_test_project.urls',
+    'LANGUAGE_CODE': 'en',
     'LANGUAGES': (
         ('en', 'English'),
         ('ja', u'日本語')
