@@ -3,7 +3,7 @@ from hvad.test_utils.testcase import NaniTestCase
 from hvad_blog.models import Entry, TranslationTagged
 from .fixtures import *
 
-class OneLanguageTagsTest(NaniTestCase, TwoLanguage):
+class TwoLanguageTagsTest(NaniTestCase, TwoLanguage):
     
     def assert_tags_equal(self, qs, tags, sort=True, attr="name"):
             got = [getattr(obj, attr) for obj in qs]
@@ -13,7 +13,7 @@ class OneLanguageTagsTest(NaniTestCase, TwoLanguage):
             self.assertEqual(got, tags)
             
     def setUp(self):
-        super(OneLanguageTagsTest, self).setUp()
+        super(TwoLanguageTagsTest, self).setUp()
         en = Entry.objects.language('en').get(pk=1)
         en.lazy_translation_getter('tags').add('some', 'english', 'tags')    
         ja = Entry.objects.language('ja').get(pk=1)
