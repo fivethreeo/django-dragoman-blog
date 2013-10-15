@@ -10,6 +10,7 @@ from django.utils import timezone
 from django.utils import six
 
 from django.db import models
+from django.contrib.contenttypes.models import ContentType
 from hvad.models import TranslatableModel, TranslatedFields, create_translations_model
 
 from taggit.managers import TaggableManager

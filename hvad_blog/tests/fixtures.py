@@ -6,7 +6,7 @@ class Fixture(object):
 
 class OneLanguage(Fixture):
     def create_fixtures(self):
-        self.en_obj = Entry.objects.language('en').create(
+        en = Entry.objects.language('en').create(
             is_published=True,
             title='English',
             slug='english'
@@ -15,15 +15,15 @@ class OneLanguage(Fixture):
 
 class TwoLanguage(Fixture):
     def create_fixtures(self):
-        self.en_obj = Entry.objects.language('en').create(
+        en = Entry.objects.language('en').create(
             is_published=True,
             title='English',
             slug='english'
         )
         
-        self.ja_obj = self.en_obj.translate('ja')
-        self.ja_obj.is_published=True
-        self.ja_obj.title='Japanese'
-        self.ja_obj.slug='japanese'
-        self.ja_obj.save()
+        ja = en.translate('ja')
+        ja.is_published=True
+        ja.title='Japanese'
+        ja.slug='japanese'
+        ja.save()
         super(TwoLanguage, self).create_fixtures()
