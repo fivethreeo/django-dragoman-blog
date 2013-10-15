@@ -1,10 +1,16 @@
+from __future__ import unicode_literals
+
+from django import VERSION
+
 import datetime
 
 from django.utils.translation import ugettext as _
 from django.utils.translation import get_language
 from django.utils import timezone
+from django.utils import six
+
 from django.db import models
-from hvad.models import TranslatableModel, TranslatedFields
+from hvad.models import TranslatableModel, TranslatedFields, create_translations_model
 
 from taggit.managers import TaggableManager
 from taggit.models import GenericTaggedItemBase
@@ -42,7 +48,9 @@ class TranslationTagged(GenericTaggedItemBase):
         else:
             kwargs["%s__language_code" % cls.tag_relname()] = get_language()
         return cls.tag_model().objects.filter(**kwargs).distinct()
-    
+
+
+
 class Entry(TranslatableModel):
 
     translations = TranslatedFields(
@@ -73,3 +81,6 @@ class Entry(TranslatableModel):
     
     def __unicode__(self):
         return self.title
+        
+class EntryTranslation(models.Model):
+    pass
