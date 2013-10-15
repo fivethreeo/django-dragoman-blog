@@ -8,41 +8,59 @@ Todo: Docs can be found at http://django-hvad-blog.readthedocs.org/
 
 Todo: Translation project at transifex: http://www.transifex.net/projects/p/django-hvad-blog/
 
-django-easytests
------------------
+Installation
+------------
 
-* put apps/projects in testing/
-* reusable test utils for 3rd party in hvad_blog/test_utils/ if needed
-* see develop.py
+For the current stable version:
+
+::
+
+    pip install django-hvad-blog # no pypi yet
+
+For the development version:
+
+::
+
+    pip install -e git+git://github.com/fivethreeo/django-hvad-blog.git@develop#egg=django-hvad-blog
+
+Configuration
+-------------
+
+Settings
+========
+
+Add ::
+
+    'hvad_blog',
+    'taggit',
+    'hvad'
+
+To INSTALLED_APPS.
+
+Set MIDDLEWARE_CLASSES to ::
+
+    (
+        'django.contrib.sessions.middleware.SessionMiddleware',
+        'django.middleware.locale.LocaleMiddleware',
+        'django.middleware.common.CommonMiddleware',
+        'django.middleware.csrf.CsrfViewMiddleware',
+        'django.contrib.auth.middleware.AuthenticationMiddleware',
+        'django.contrib.messages.middleware.MessageMiddleware'
+    )
+
+Urls
+====
+
+Add ::
     
-Todo:
------
-
-* tests
-* docs
-* work
-
-subclass generics for language filtering
-========================================
-
-Testing needed
-
-django-cms integration
-======================
-
-App with apphook and plugins, replaced model with placeholder(s).
-Abstract model + default model ala django-shop, hooks for model replacement.
-
-django-taggit-classy-templatetags
-=================================
-
-* rename module, taggit_classy
-* needs new tests
+    from django.conf.urls.i18n import i18n_patterns
     
-translated tags using taggit
-============================
+    urlpatterns += i18n_patterns('',
+        url(r'^blog/', include('hvad_blog.urls'))
+    )
 
-* needs tests
+To your project roots urls.py
+
 
 To join in development
 ----------------------
@@ -62,3 +80,40 @@ To join in development
     python develop.py server
     
     http://127.0.0.1:8000/admin/
+    
+django-easytests
+================
+
+* put apps/projects in testing/
+* reusable test utils for 3rd party in hvad_blog/test_utils/ if needed
+* see develop.py
+
+Todo:
+=====
+
+* tests
+* docs
+* work
+
+subclass generics for language filtering
+''''''''''''''''''''''''''''''''''''''''
+
+Testing needed
+
+django-cms integration
+''''''''''''''''''''''
+
+App with apphook and plugins, replaced model with placeholder(s).
+Abstract model + default model ala django-shop, hooks for model replacement.
+
+django-taggit-classy-templatetags
+'''''''''''''''''''''''''''''''''
+
+* rename module, taggit_classy
+* needs new tests
+    
+translated tags using taggit
+''''''''''''''''''''''''''''
+
+* needs tests, views and templatetags
+    
