@@ -37,13 +37,11 @@ django-taggit-classy-templatetags
 =================================
 
 * rename module, taggit_classy
-* design decisions and needs new tests
-* use django-easytests
+* needs new tests
     
 translated tags using taggit
 ============================
 
-* add a language arg to templatetag?
 * needs tests
 
 To join in development

@@ -48,9 +48,7 @@ class TranslationTagged(GenericTaggedItemBase):
         else:
             kwargs["%s__language_code" % cls.tag_relname()] = get_language()
         return cls.tag_model().objects.filter(**kwargs).distinct()
-
-
-
+        
 class Entry(TranslatableModel):
 
     translations = TranslatedFields(
@@ -67,20 +65,18 @@ class Entry(TranslatableModel):
         pub_date = self.lazy_translation_getter('pub_date', None)
         slug = self.lazy_translation_getter('slug', None)
 
-        if pub_date and slug:
-            local_pub_date = timezone.localtime(pub_date)
+        local_pub_date = timezone.localtime(pub_date)
     
-            return ('hvad_blog_detail', (), {
-                'year': local_pub_date.year,
-                'month': local_pub_date.strftime('%m'),
-                'day': local_pub_date.strftime('%d'),
-                'slug': self.slug
-            })
-        return ('hvad_blog_archive_index', (), {})
+        return ('hvad_blog_detail', (), {
+            'year': local_pub_date.year,
+            'month': local_pub_date.strftime('%m'),
+            'day': local_pub_date.strftime('%d'),
+            'slug': self.slug
+        })
     get_absolute_url = models.permalink(_get_absolute_url)
     
     def __unicode__(self):
-        return self.title
+        return self.lazy_translation_getter('title', 'No title')
         
 class EntryTranslation(models.Model):
     pass
