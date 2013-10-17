@@ -97,11 +97,6 @@ Todo:
 * docs
 * work
 
-subclass generics for language filtering
-''''''''''''''''''''''''''''''''''''''''
-
-Testing needed
-
 django-cms integration
 ''''''''''''''''''''''
 
