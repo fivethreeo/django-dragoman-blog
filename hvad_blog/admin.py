@@ -1,6 +1,6 @@
 from django.utils.translation import get_language
 from django.contrib import admin
-from hvad_blog.models import Entry
+from hvad_blog.models import Entry, EntryTranslation
 from django.utils.encoding import force_unicode
 from django.utils.html import escape
 from django.http import Http404, HttpResponseRedirect
@@ -44,8 +44,9 @@ def make_translation_admin(translationmodel,
             return HttpResponseRedirect(reverse('admin:hvad_blog_entry_change', args=[obj.master.pk])+'?language_code='+obj.language_code)
     
         def changelist_view(self, request, extra_context={}):
+            extra_context.update(self.get_language(request, as_dict=True))
             if not 'language_code' in request.GET:
-                return HttpResponseRedirect(request.path+'?language_code='+get_language())
+                return HttpResponseRedirect(request.path+'?'+self.get_language(request, as_qs=True))
             else:
                 return super(TranslationAdmin, self).changelist_view(request, extra_context=extra_context)
                     
@@ -53,14 +54,15 @@ def make_translation_admin(translationmodel,
             extra_context.update(self.get_language(request, as_dict=True))      
             resp =  super(TranslationAdmin, self).delete_view(request, object_id, extra_context=extra_context)
             if 'Location' in resp:
-                resp['Location'] = resp['Location']+'?language_code='+request.POST.get('language_code', get_language())
+                resp['Location'] = resp['Location']+'?'+self.get_language(request, as_qs=True)
             return resp
                 
     class TranslationInline(TranslationInlineBase):
         max_num = 1
         exclude = ('language_code',)
         model = translationmodel
-    
+        template = 'admin/hvad_blog/stacked_inline.html'
+
         def queryset(self, request):
             queryset = super(TranslationInline, self).queryset(request)
             queryset = queryset.filter(language_code=request.REQUEST.get('language_code', get_language()))
@@ -172,6 +174,6 @@ def make_translation_admin(translationmodel,
         return SharedAdmin, TranslationAdmin, TranslationInline    
     return SharedAdmin
     
-admin.site.register(Entry, make_translation_admin(Entry.translations.related.model))
+admin.site.register(Entry, make_translation_admin(EntryTranslation))
 
                 

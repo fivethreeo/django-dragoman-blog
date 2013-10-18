@@ -11,7 +11,7 @@ from django.utils import six
 
 from django.db import models
 from django.contrib.contenttypes.models import ContentType
-from hvad.models import TranslatableModel, TranslatedFields, create_translations_model
+from django.conf import settings
 
 from taggit.managers import TaggableManager
 from taggit.models import GenericTaggedItemBase
@@ -50,21 +50,30 @@ class TranslationTagged(GenericTaggedItemBase):
             kwargs["%s__language_code" % cls.tag_relname()] = get_language()
         return cls.tag_model().objects.filter(**kwargs).distinct()
         
-class Entry(TranslatableModel):
-
-    translations = TranslatedFields(
-        is_published = models.BooleanField(_('is published')),
-        pub_date = models.DateTimeField(_('publish at'), default=timezone.now),
-         
-        title = models.CharField(_('title'), max_length=255),
-        slug = models.SlugField(_('slug'), max_length=255),
-        author = models.ForeignKey('auth.User', null=True, blank=True, verbose_name=_("author")),
-        tags = TaggableManager(through=TranslationTagged)
-    )
-
+class Entry(models.Model):
+    pass
+    
+class EntryTranslation(models.Model):
+    
+    class Meta:
+        verbose_name = _('Entry')
+        verbose_name_plural = _('Entrys')
+    
+    language_code = models.CharField(_('language'), max_length=15, db_index=True, choices=settings.LANGUAGES)
+    
+    master = models.ForeignKey(Entry)
+    is_published = models.BooleanField(_('is published'))
+    pub_date = models.DateTimeField(_('publish at'), default=timezone.now)
+     
+    title = models.CharField(_('title'), max_length=255)
+    slug = models.SlugField(_('slug'), max_length=255)
+    author = models.ForeignKey('auth.User', null=True, blank=True, verbose_name=_("author"))
+    
+    tags = TaggableManager(through=TranslationTagged)
+    
     def _get_absolute_url(self):
-        pub_date = self.lazy_translation_getter('pub_date', None)
-        slug = self.lazy_translation_getter('slug', None)
+        pub_date = self.pub_date
+        slug = self.slug
 
         local_pub_date = timezone.localtime(pub_date)
     
@@ -72,12 +81,7 @@ class Entry(TranslatableModel):
             'year': local_pub_date.year,
             'month': local_pub_date.strftime('%m'),
             'day': local_pub_date.strftime('%d'),
-            'slug': self.slug
+            'slug': slug
         })
     get_absolute_url = models.permalink(_get_absolute_url)
     
-    def __unicode__(self):
-        return self.lazy_translation_getter('title', 'No title')
-        
-class EntryTranslation(models.Model):
-    pass

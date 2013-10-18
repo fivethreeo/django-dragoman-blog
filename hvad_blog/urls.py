@@ -1,7 +1,7 @@
 from django.conf.urls import url, patterns
 
 # from hvad_blog.feeds import EntriesFeed, TaggedEntriesFeed, AuthorEntriesFeed
-from hvad_blog.models import Entry
+from hvad_blog.models import Entry, EntryTranslation
 
 from django.utils.translation import get_language
 from django.views.generic.dates import DateDetailView, ArchiveIndexView, YearArchiveView, MonthArchiveView, DayArchiveView
@@ -33,14 +33,14 @@ class EntryDayArchive(DayArchiveView):
         
 
 blog_info_dict = {
-    'queryset': Entry.translations.related.model.objects.all(),
+    'queryset': EntryTranslation.objects.all(),
     'date_field': 'pub_date',
     'allow_empty': True,
     'paginate_by': 15,
 }
 
 blog_detail = EntryDateDetail.as_view(
-    queryset=Entry.translations.related.model.objects.all(),
+    queryset=EntryTranslation.objects.all(),
     date_field='pub_date',
     month_format='%m',
     slug_field='slug',
