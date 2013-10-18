@@ -9,26 +9,43 @@ from functools import update_wrapper
 from django.contrib.admin.util import unquote
 from django.conf import settings
 
+class GetLanguageMixin(object):
+    
+    def get_language(self, request, as_dict=False, as_qs=False):
+        language_code = request.REQUEST.get('language_code', get_language())
+        if as_dict:
+            return {'language_code': language_code}
+        if as_qs:
+            return 'language_code='+language_code
+        return language_code    
+        
+    def get_language_tabs(self, request, obj=None):
+        tabs = {}
+        for code, name in settings.LANGUAGES:
+            tabs[code] = {'name': name}
+        allow_deletion = False
+        if obj:
+            translations = self.translation_model.objects.filter(master=obj).values('id', 'language_code')
+            if len(translations) > 1:
+                allow_deletion = True
+            for translation in translations:
+                code = translation['language_code']
+                if code in tabs:
+                    tabs[code]['id'] = translation['id']
+        return {'allow_deletion': allow_deletion, 'language_tabs': tabs, 'language_tabs_code': self.get_language(request)}
+                    
 def make_translation_admin(translationmodel,
     SharedAdminBase=admin.ModelAdmin,
     TranslationAdminBase=admin.ModelAdmin,
     TranslationInlineBase=admin.StackedInline,
     return_parts=False):
     
-    class TranslationAdmin(TranslationAdminBase):
+    class TranslationAdmin(GetLanguageMixin, TranslationAdminBase):
         
         list_filter = ('language_code',)
         delete_confirmation_template = 'admin/hvad_blog/delete_confirmation.html'
         change_list_template = 'admin/hvad_blog/change_list.html'
-        
-        def get_language(self, request, as_dict=False, as_qs=False):
-            language_code = request.REQUEST.get('language_code', get_language())
-            if as_dict:
-                return {'language_code': language_code}
-            if as_qs:
-                return 'language_code='+language_code
-            return language_code
-                    
+
         def change_view(self, request, object_id, form_url='', extra_context=None):
             "The 'change' admin view for this model."
             model = self.model
@@ -56,19 +73,21 @@ def make_translation_admin(translationmodel,
             if 'Location' in resp:
                 resp['Location'] = resp['Location']+'?'+self.get_language(request, as_qs=True)
             return resp
-                
-    class TranslationInline(TranslationInlineBase):
-        max_num = 1
+            
+    class BaseTranslationInline(GetLanguageMixin, TranslationInlineBase):
         exclude = ('language_code',)
+        
+        def queryset(self, request):
+            queryset = super(BaseTranslationInline, self).queryset(request)
+            queryset = queryset.filter(language_code=self.get_language(request))
+            return queryset
+                         
+    class TranslationInline(BaseTranslationInline):
+        max_num = 1
         model = translationmodel
         template = 'admin/hvad_blog/stacked_inline.html'
-
-        def queryset(self, request):
-            queryset = super(TranslationInline, self).queryset(request)
-            queryset = queryset.filter(language_code=request.REQUEST.get('language_code', get_language()))
-            return queryset
-            
-    class SharedAdmin(SharedAdminBase):
+                
+    class SharedAdmin(GetLanguageMixin, SharedAdminBase):
 
         change_form_template = 'admin/hvad_blog/change_form.html'
         delete_confirmation_template = 'admin/hvad_blog/delete_confirmation.html'
@@ -80,30 +99,7 @@ def make_translation_admin(translationmodel,
             self.translation_model = self.translation[0]
                         
         translation = (translationmodel, TranslationAdmin, TranslationInline)
-        
-        def get_language(self, request, as_dict=False, as_qs=False):
-            language_code = request.REQUEST.get('language_code', get_language())
-            if as_dict:
-                return {'language_code': language_code}
-            if as_qs:
-                return 'language_code='+language_code
-            return language_code
-        
-        def get_language_tabs(self, request, obj=None):
-            tabs = {}
-            for code, name in settings.LANGUAGES:
-                tabs[code] = {'name': name}
-            allow_deletion = False
-            if obj:
-                translations = self.translation_model.objects.filter(master=obj).values('id', 'language_code')
-                if len(translations) > 1:
-                    allow_deletion = True
-                for translation in translations:
-                    code = translation['language_code']
-                    if code in tabs:
-                        tabs[code]['id'] = translation['id']
-            return {'allow_deletion': allow_deletion, 'language_tabs': tabs, 'language_tabs_code': self.get_language(request)}
-            
+
         def delete_view(self, request, object_id, extra_context={}):
             extra_context.update(self.get_language(request, as_dict=True))
             resp =  super(SharedAdmin, self).delete_view(request, object_id, extra_context=extra_context)
@@ -171,7 +167,7 @@ def make_translation_admin(translationmodel,
             else:
                 super(SharedAdmin, self).save_formset(request, form, formset, change)
     if return_parts:
-        return SharedAdmin, TranslationAdmin, TranslationInline    
+        return SharedAdmin, TranslationAdmin, BaseTranslationInline, TranslationInline    
     return SharedAdmin
     
 admin.site.register(Entry, make_translation_admin(EntryTranslation))
