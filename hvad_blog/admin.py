@@ -7,6 +7,7 @@ from django.http import Http404, HttpResponseRedirect
 from django.core.urlresolvers import reverse
 from functools import update_wrapper
 from django.contrib.admin.util import unquote
+from django.conf import settings
 
 def make_translation_admin(translationmodel,
     SharedAdminBase=admin.ModelAdmin,
@@ -15,6 +16,9 @@ def make_translation_admin(translationmodel,
     return_parts=False):
     
     class TranslationAdmin(TranslationAdminBase):
+        
+        list_filter = ('language_code',)
+        delete_confirmation_template = 'admin/hvad_blog/delete_confirmation.html'
         
         def change_view(self, request, object_id, form_url='', extra_context=None):
             "The 'change' admin view for this model."
@@ -35,7 +39,13 @@ def make_translation_admin(translationmodel,
                 return HttpResponseRedirect(request.path+'?language_code='+get_language())
             else:
                 return super(TranslationAdmin, self).changelist_view(request, extra_context=extra_context)
-        
+                    
+        def delete_view(self, request, object_id, extra_context=None):
+            resp =  super(TranslationAdmin, self).delete_view(request, object_id, extra_context=extra_context)
+            if 'Location' in resp:
+                resp['Location'] = resp['Location']+'?language_code='+request.POST.get('language_code', get_language())
+            return resp
+                
     class TranslationInline(TranslationInlineBase):
         max_num = 1
         exclude = ('language_code',)
@@ -47,6 +57,9 @@ def make_translation_admin(translationmodel,
             return queryset
             
     class SharedAdmin(SharedAdminBase):
+
+        change_form_template = 'admin/hvad_blog/change_form.html'
+        delete_confirmation_template = 'admin/hvad_blog/delete_confirmation.html'
         
         def __init__(self, model, admin_site):
             super(SharedAdmin, self).__init__(model, admin_site)
@@ -56,20 +69,50 @@ def make_translation_admin(translationmodel,
                         
         translation = (translationmodel, TranslationAdmin, TranslationInline)
         
-        def add_view(self, request, form_url='', extra_context=None):
+        def get_language_tabs(self, request, obj=None):
+            tabs = {}
+            for code, name in settings.LANGUAGES:
+                tabs[code] = {'name': name}
+            allow_deletion = False
+            if obj:
+                translations = self.translation_model.objects.filter(master=obj).values('id', 'language_code')
+                if len(translations) > 1:
+                    allow_deletion = True
+                for translation in translations:
+                    code = translation['language_code']
+                    if code in tabs:
+                        tabs[code]['id'] = translation['id']
+            return {'allow_deletion': allow_deletion, 'language_tabs': tabs, 'language_tabs_code': request.REQUEST.get('language_code', get_language())}
+            
+        def delete_view(self, request, object_id, extra_context=None):
+            resp =  super(SharedAdmin, self).delete_view(request, object_id, extra_context=extra_context)
+            if 'Location' in resp:
+                resp['Location'] = resp['Location']+'?language_code='+request.POST.get('language_code', get_language())
+            return resp
+                                 
+        def add_view(self, request, form_url='', extra_context={}):
             if not 'language_code' in request.GET:
                 return HttpResponseRedirect(request.path+'?language_code='+get_language())
             else:
+                extra_context.update(self.get_language_tabs(request))
                 return super(SharedAdmin, self).add_view(request, form_url=form_url, extra_context=extra_context)
                 
-        def response_post_save_add(self, request, obj):
-            resp = super(SharedAdmin, self).response_post_save_add(request, obj)
-            resp['Location'] = resp['Location']+'?language_code='+request.REQUEST.get('language_code', get_language())
+        def change_view(self, request, object_id, form_url='', extra_context={}):
+            if not 'language_code' in request.GET:
+                return HttpResponseRedirect(request.path+'?language_code='+get_language())
+            else:
+                obj = self.get_object(request, unquote(object_id))
+                extra_context.update(self.get_language_tabs(request, obj))
+                return super(SharedAdmin, self).change_view(request, object_id, form_url=form_url, extra_context=extra_context)
+            
+        def response_change(self, request, obj):
+            resp = super(SharedAdmin, self).response_change(request, obj)
+            resp['Location'] = resp['Location']+'?language_code='+request.POST.get('language_code', get_language())
             return resp
             
-        def response_post_save_change(self, request, obj):
-            resp = super(SharedAdmin, self).response_post_save_change(request, obj)
-            resp['Location'] = resp['Location']+'?language_code='+request.REQUEST.get('language_code', get_language())
+        def response_add(self, request, obj):
+            resp = super(SharedAdmin, self).response_add(request, obj)
+            resp['Location'] = resp['Location']+'?language_code='+request.POST.get('language_code', get_language())
             return resp
             
         def get_urls(self):
@@ -86,6 +129,7 @@ def make_translation_admin(translationmodel,
             urlpatterns = patterns('',
                 url(r'^$', wrap(self.translation_admin.changelist_view), name='%s_%s_changelist' % info),
                 url(r'^subadmin/', include(self.translation_admin.urls)),
+                url(r'^$', wrap(self.translation_admin.changelist_view), name='%s_%s_changelist' % info2),
             )
             return urlpatterns + super(SharedAdmin, self).get_urls() + patterns('',
                 url(r'^add/$', wrap(self.add_view), name='%s_%s_add' % info2),
@@ -100,7 +144,7 @@ def make_translation_admin(translationmodel,
                 formset.save(commit=False)
                 for f in formset.forms:
                     obj = f.instance 
-                    obj.language_code = get_language()
+                    obj.language_code = request.POST.get('language_code', get_language())
                     obj.save()
                 formset.save_m2m()
             else:

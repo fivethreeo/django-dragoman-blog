@@ -1,0 +1,29 @@
+{% extends "admin/delete_confirmation.html " %}
+{% load admin_static %}
+
+{% block extrahead %}
+{{ block.super }}
+<script type="text/javascript" src="{% static "admin/js/jquery.min.js" %}"></script>
+<script type="text/javascript" src="{% static "admin/js/jquery.init.js" %}"></script>
+
+<script type="text/javascript">
+        (function($) {
+            function get_qs() {
+                var vars = [];
+                    var q = document.URL.split('?')[1];
+                    if(q != undefined){
+                        q = q.split('&');
+                        for(var i = 0; i < q.length; i++){
+                            var hash = q[i].split('=');
+                            if (vars[hash[0]] === undefined) vars[hash[0]] = []
+                            vars[hash[0]].push(hash[1]);
+                        }
+                    }
+                    return vars
+                }
+            $(document).ready(function() {
+                $('form').append('<input type="hidden" name="language_code" value="' + get_qs()['language_code'][0] + '" />')
+            });
+        })(django.jQuery);
+</script>
+{% endblock %}
