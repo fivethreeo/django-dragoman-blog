@@ -1,5 +1,5 @@
 {% extends "admin/change_form.html" %}
-{% load i18n hvad_blog_tags %}
+{% load i18n admin_urls hvad_blog_tags %}
 
 {% block extrahead %}
 {{ block.super }}
@@ -28,6 +28,17 @@
 }
 </style>
 {% endblock %}
+
+{% if not is_popup %}
+{% block breadcrumbs %}
+<div class="breadcrumbs">
+<a href="{% url 'admin:index' %}">{% trans 'Home' %}</a>
+&rsaquo; <a href="{% url 'admin:app_list' app_label=opts.app_label %}">{{ app_label|capfirst|escape }}</a>
+&rsaquo; {% if has_change_permission %}<a href="{% url opts|admin_urlname:'changelist' %}?language_code__exact={{ language_tabs_code }}">{{ opts.verbose_name_plural|capfirst }}</a>{% else %}{{ opts.verbose_name_plural|capfirst }}{% endif %}
+&rsaquo; {% if add %}{% trans 'Add' %} {{ opts.verbose_name }}{% else %}{{ original|truncatewords:"18" }}{% endif %}
+</div>
+{% endblock %}
+{% endif %}
 
 {% block after_related_objects %}<input type="hidden" name="language_code" value="{{ language_tabs_code }}" />{% endblock %}
 {% block submit_buttons_bottom %}{% submit_row %}{% endblock %}

@@ -71,6 +71,9 @@ class EntryTranslation(models.Model):
     
     tags = TaggableManager(through=TranslationTagged)
     
+    def __unicode__(self):
+        return self.title
+    
     def _get_absolute_url(self):
         pub_date = self.pub_date
         slug = self.slug

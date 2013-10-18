@@ -11,12 +11,12 @@ from django.conf import settings
 
 class GetLanguageMixin(object):
     
-    def get_language(self, request, as_dict=False, as_qs=False):
-        language_code = request.REQUEST.get('language_code', get_language())
+    def get_language(self, request, as_dict=False, as_qs=False, suffix=''):
+        language_code = request.REQUEST.get('language_code', request.REQUEST.get('language_code'+ suffix, get_language()))
         if as_dict:
             return {'language_code': language_code}
         if as_qs:
-            return 'language_code='+language_code
+            return 'language_code' + suffix +'='+language_code
         return language_code    
         
     def get_language_tabs(self, request, obj=None):
@@ -61,11 +61,8 @@ def make_translation_admin(translationmodel,
             return HttpResponseRedirect(reverse('admin:hvad_blog_entry_change', args=[obj.master.pk])+'?language_code='+obj.language_code)
     
         def changelist_view(self, request, extra_context={}):
-            extra_context.update(self.get_language(request, as_dict=True))
-            if not 'language_code' in request.GET:
-                return HttpResponseRedirect(request.path+'?'+self.get_language(request, as_qs=True))
-            else:
-                return super(TranslationAdmin, self).changelist_view(request, extra_context=extra_context)
+            extra_context.update(self.get_language(request, as_dict=True, suffix='__exact'))
+            return super(TranslationAdmin, self).changelist_view(request, extra_context=extra_context)
                     
         def delete_view(self, request, object_id, extra_context={}):
             extra_context.update(self.get_language(request, as_dict=True))      
@@ -124,12 +121,12 @@ def make_translation_admin(translationmodel,
             
         def response_change(self, request, obj):
             resp = super(SharedAdmin, self).response_change(request, obj)
-            resp['Location'] = resp['Location']+'?'+self.get_language(request, as_qs=True)
+            resp['Location'] = resp['Location']+'?'+self.get_language(request, as_qs=True, suffix='__exact')
             return resp
             
         def response_add(self, request, obj):
             resp = super(SharedAdmin, self).response_add(request, obj)
-            resp['Location'] = resp['Location']+'?'+self.get_language(request, as_qs=True)
+            resp['Location'] = resp['Location']+'?'+self.get_language(request, as_qs=True, suffix='__exact')
             return resp
             
         def get_urls(self):
