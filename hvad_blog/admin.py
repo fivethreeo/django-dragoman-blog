@@ -19,7 +19,16 @@ def make_translation_admin(translationmodel,
         
         list_filter = ('language_code',)
         delete_confirmation_template = 'admin/hvad_blog/delete_confirmation.html'
+        change_list_template = 'admin/hvad_blog/change_list.html'
         
+        def get_language(self, request, as_dict=False, as_qs=False):
+            language_code = request.REQUEST.get('language_code', get_language())
+            if as_dict:
+                return {'language_code': language_code}
+            if as_qs:
+                return 'language_code='+language_code
+            return language_code
+                    
         def change_view(self, request, object_id, form_url='', extra_context=None):
             "The 'change' admin view for this model."
             model = self.model
@@ -34,13 +43,14 @@ def make_translation_admin(translationmodel,
                 raise Http404(_('%(name)s object with primary key %(key)r does not exist.') % {'name': force_unicode(opts.verbose_name), 'key': escape(object_id)})
             return HttpResponseRedirect(reverse('admin:hvad_blog_entry_change', args=[obj.master.pk])+'?language_code='+obj.language_code)
     
-        def changelist_view(self, request, extra_context=None):
+        def changelist_view(self, request, extra_context={}):
             if not 'language_code' in request.GET:
                 return HttpResponseRedirect(request.path+'?language_code='+get_language())
             else:
                 return super(TranslationAdmin, self).changelist_view(request, extra_context=extra_context)
                     
-        def delete_view(self, request, object_id, extra_context=None):
+        def delete_view(self, request, object_id, extra_context={}):
+            extra_context.update(self.get_language(request, as_dict=True))      
             resp =  super(TranslationAdmin, self).delete_view(request, object_id, extra_context=extra_context)
             if 'Location' in resp:
                 resp['Location'] = resp['Location']+'?language_code='+request.POST.get('language_code', get_language())
@@ -69,6 +79,14 @@ def make_translation_admin(translationmodel,
                         
         translation = (translationmodel, TranslationAdmin, TranslationInline)
         
+        def get_language(self, request, as_dict=False, as_qs=False):
+            language_code = request.REQUEST.get('language_code', get_language())
+            if as_dict:
+                return {'language_code': language_code}
+            if as_qs:
+                return 'language_code='+language_code
+            return language_code
+        
         def get_language_tabs(self, request, obj=None):
             tabs = {}
             for code, name in settings.LANGUAGES:
@@ -82,24 +100,25 @@ def make_translation_admin(translationmodel,
                     code = translation['language_code']
                     if code in tabs:
                         tabs[code]['id'] = translation['id']
-            return {'allow_deletion': allow_deletion, 'language_tabs': tabs, 'language_tabs_code': request.REQUEST.get('language_code', get_language())}
+            return {'allow_deletion': allow_deletion, 'language_tabs': tabs, 'language_tabs_code': self.get_language(request)}
             
-        def delete_view(self, request, object_id, extra_context=None):
+        def delete_view(self, request, object_id, extra_context={}):
+            extra_context.update(self.get_language(request, as_dict=True))
             resp =  super(SharedAdmin, self).delete_view(request, object_id, extra_context=extra_context)
             if 'Location' in resp:
-                resp['Location'] = resp['Location']+'?language_code='+request.POST.get('language_code', get_language())
+                resp['Location'] = resp['Location']+'?'+self.get_language(request, as_qs=True)
             return resp
                                  
         def add_view(self, request, form_url='', extra_context={}):
             if not 'language_code' in request.GET:
-                return HttpResponseRedirect(request.path+'?language_code='+get_language())
+                return HttpResponseRedirect(request.path+'?'+self.get_language(request, as_qs=True))
             else:
                 extra_context.update(self.get_language_tabs(request))
                 return super(SharedAdmin, self).add_view(request, form_url=form_url, extra_context=extra_context)
                 
         def change_view(self, request, object_id, form_url='', extra_context={}):
             if not 'language_code' in request.GET:
-                return HttpResponseRedirect(request.path+'?language_code='+get_language())
+                return HttpResponseRedirect(request.path+'?'+self.get_language(request, as_qs=True))
             else:
                 obj = self.get_object(request, unquote(object_id))
                 extra_context.update(self.get_language_tabs(request, obj))
@@ -107,12 +126,12 @@ def make_translation_admin(translationmodel,
             
         def response_change(self, request, obj):
             resp = super(SharedAdmin, self).response_change(request, obj)
-            resp['Location'] = resp['Location']+'?language_code='+request.POST.get('language_code', get_language())
+            resp['Location'] = resp['Location']+'?'+self.get_language(request, as_qs=True)
             return resp
             
         def response_add(self, request, obj):
             resp = super(SharedAdmin, self).response_add(request, obj)
-            resp['Location'] = resp['Location']+'?language_code='+request.POST.get('language_code', get_language())
+            resp['Location'] = resp['Location']+'?'+self.get_language(request, as_qs=True)
             return resp
             
         def get_urls(self):
@@ -144,7 +163,7 @@ def make_translation_admin(translationmodel,
                 formset.save(commit=False)
                 for f in formset.forms:
                     obj = f.instance 
-                    obj.language_code = request.POST.get('language_code', get_language())
+                    obj.language_code = self.get_language(request)
                     obj.save()
                 formset.save_m2m()
             else:

@@ -1,5 +1,5 @@
 {% extends "admin/change_form.html" %}
-{% load i18n %}
+{% load i18n hvad_blog_tags %}
 
 {% block extrahead %}
 {{ block.super }}
@@ -27,29 +27,10 @@
     position: relative;
 }
 </style>
-<script type="text/javascript">
-        (function($) {
-            function get_qs() {
-                var vars = [];
-                    var q = document.URL.split('?')[1];
-                    if(q != undefined){
-                        q = q.split('&');
-                        for(var i = 0; i < q.length; i++){
-                            var hash = q[i].split('=');
-                            if (vars[hash[0]] === undefined) vars[hash[0]] = []
-                            vars[hash[0]].push(hash[1]);
-                        }
-                    }
-                    return vars
-                }
-            $(document).ready(function() {
-                $('.submit-row .deletelink').attr('href',  $('.submit-row .deletelink').attr('href') + '?language_code=' + get_qs()['language_code'][0])
-            });
-        })(django.jQuery);
-</script>
 {% endblock %}
 
 {% block after_related_objects %}<input type="hidden" name="language_code" value="{{ language_tabs_code }}" />{% endblock %}
+{% block submit_buttons_bottom %}{% submit_row %}{% endblock %}
 
 {% block object-tools %}
 {{ block.super }}

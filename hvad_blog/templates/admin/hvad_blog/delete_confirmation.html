@@ -1,29 +1,44 @@
-{% extends "admin/delete_confirmation.html " %}
-{% load admin_static %}
+{% extends "admin/base_site.html" %}
+{% load i18n %}
+{% load admin_urls %}
 
-{% block extrahead %}
-{{ block.super }}
-<script type="text/javascript" src="{% static "admin/js/jquery.min.js" %}"></script>
-<script type="text/javascript" src="{% static "admin/js/jquery.init.js" %}"></script>
+{% block breadcrumbs %}
+<div class="breadcrumbs">
+<a href="{% url 'admin:index' %}">{% trans 'Home' %}</a>
+&rsaquo; <a href="{% url 'admin:app_list' app_label=opts.app_label %}">{{ app_label|capfirst }}</a>
+&rsaquo; <a href="{% url opts|admin_urlname:'changelist' %}">{{ opts.verbose_name_plural|capfirst|escape }}</a>
+&rsaquo; <a href="{% url opts|admin_urlname:'change' object.pk|admin_urlquote %}">{{ object|truncatewords:"18" }}</a>
+&rsaquo; {% trans 'Delete' %}
+</div>
+{% endblock %}
 
-<script type="text/javascript">
-        (function($) {
-            function get_qs() {
-                var vars = [];
-                    var q = document.URL.split('?')[1];
-                    if(q != undefined){
-                        q = q.split('&');
-                        for(var i = 0; i < q.length; i++){
-                            var hash = q[i].split('=');
-                            if (vars[hash[0]] === undefined) vars[hash[0]] = []
-                            vars[hash[0]].push(hash[1]);
-                        }
-                    }
-                    return vars
-                }
-            $(document).ready(function() {
-                $('form').append('<input type="hidden" name="language_code" value="' + get_qs()['language_code'][0] + '" />')
-            });
-        })(django.jQuery);
-</script>
+{% block content %}
+{% if perms_lacking or protected %}
+    {% if perms_lacking %}
+        <p>{% blocktrans with escaped_object=object %}Deleting the {{ object_name }} '{{ escaped_object }}' would result in deleting related objects, but your account doesn't have permission to delete the following types of objects:{% endblocktrans %}</p>
+        <ul>
+        {% for obj in perms_lacking %}
+            <li>{{ obj }}</li>
+        {% endfor %}
+        </ul>
+    {% endif %}
+    {% if protected %}
+        <p>{% blocktrans with escaped_object=object %}Deleting the {{ object_name }} '{{ escaped_object }}' would require deleting the following protected related objects:{% endblocktrans %}</p>
+        <ul>
+        {% for obj in protected %}
+            <li>{{ obj }}</li>
+        {% endfor %}
+        </ul>
+    {% endif %}
+{% else %}
+    <p>{% blocktrans with escaped_object=object %}Are you sure you want to delete the {{ object_name }} "{{ escaped_object }}"? All of the following related items will be deleted:{% endblocktrans %}</p>
+    <ul>{{ deleted_objects|unordered_list }}</ul>
+    <form action="" method="post">{% csrf_token %}
+    <div>
+    <input type="hidden" name="language_code" value="{{ language_code }}" />    
+    <input type="hidden" name="post" value="yes" />
+    <input type="submit" value="{% trans "Yes, I'm sure" %}" />
+    </div>
+    </form>
+{% endif %}
 {% endblock %}
