@@ -1,11 +1,11 @@
 {% extends "admin/change_form.html" %}
-{% load i18n admin_urls hvad_blog_tags %}
+{% load i18n admin_urls dragoman_blog_tags %}
 
 {% block extrahead %}
 {{ block.super }}
 <style type="text/css">
 
-.hvad-blog-language-tabs span {
+.dragoman-blog-language-tabs span {
     display: inline-block;
     padding: 5px 15px;
     border: 1px solid #ccc;
@@ -15,14 +15,14 @@
     top: 1px;
     font-weight: bold;
 }
-.hvad-blog-language-tabs span.current {
+.dragoman-blog-language-tabs span.current {
     padding-top: 9px;
 }
-.hvad-blog-language-tabs span.empty {
+.dragoman-blog-language-tabs span.empty {
     opacity: 0.6;
     font-weight: normal;
 }
-.hvad-blog-language-tabs a.deletelink {
+.dragoman-blog-language-tabs a.deletelink {
     right: -17px;
     bottom: 4px;
     position: relative;
@@ -46,14 +46,14 @@
 
 {% block object-tools %}
 {{ block.super }}
-<div class="hvad-blog-language-tabs">
+<div class="dragoman-blog-language-tabs">
     {% for code, tab in language_tabs.items %}
        <span class="{% if tab.current %}current{% endif %}{% if not tab.id %} empty{% endif %}">
            {% if not object_id %}
-               <a href="{% url 'admin:hvad_blog_entry_add' %}?language_code={{code}}">{{ tab.name }}</a>
+               <a href="{% url opts|admin_urlname:'add' %}?language_code={{code}}">{{ tab.name }}</a>
            {% else %}
-               <a href="{% url 'admin:hvad_blog_entry_change' object_id %}?language_code={{code}}">{{ tab.name }}</a>
-               {% if allow_deletion %}<a class="deletelink" href="{% url 'admin:hvad_blog_entrytranslation_delete' tab.id %}?language_code={{code}}" title="{% trans 'Delete Translation' %}">&nbsp;</a>{% endif %}
+               <a href="{% url opts|admin_urlname:'change' object_id %}?language_code={{code}}">{{ tab.name }}</a>
+               {% if allow_deletion %}<a class="deletelink" href="{% url 'admin:dragoman_blog_entrytranslation_delete' tab.id %}?language_code={{code}}" title="{% trans 'Delete Translation' %}">&nbsp;</a>{% endif %}
                
            {% endif %}
         </span>

@@ -1,7 +1,7 @@
 from setuptools import setup, find_packages
 import os
 
-import hvad_blog
+import dragoman_blog
 
 CLASSIFIERS = [
         'Development Status :: 5 - Production/Stable',
@@ -14,8 +14,8 @@ CLASSIFIERS = [
 ]
 
 setup(
-    name='django-hvad-blog',
-    version=hvad_blog.get_version(),
+    name='django-dragoman-blog',
+    version=dragoman_blog.get_version(),
     description='This is a multilanguage blog app for django',
     long_description=open(os.path.join(os.path.dirname(__file__), 'README.rst')).read(),
     author='Oyvind Saltvik',
@@ -24,12 +24,12 @@ setup(
     packages=find_packages(),
     package_data={
         'hvad_blog': [
-            'static/hvad_blog/*',
+            'static/dragoman_blog/*',
             'locale/*/LC_MESSAGES/*',
         ]
     },
     classifiers=CLASSIFIERS,
     include_package_data=True,
     zip_safe=False,
-    install_requires=['django-taggit', 'django-hvad'],
+    install_requires=['django-taggit'],
 )

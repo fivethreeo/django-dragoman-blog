@@ -70,15 +70,15 @@ def make_translation_admin(translationmodel,
     class TranslationInline(BaseTranslationInline):
         max_num = 1
         model = translationmodel
-        template = 'admin/hvad_blog/stacked_inline.html'
+        template = 'admin/dragoman_blog/stacked_inline.html'
         formset = AtLeastOneRequiredInlineFormSet
                     
     class TranslationAdmin(GetLanguageMixin, TranslationAdminBase):
         language_field = 'language_code'
 
         list_filter = ('language_code',)
-        delete_confirmation_template = 'admin/hvad_blog/delete_confirmation.html'
-        change_list_template = 'admin/hvad_blog/change_list.html'
+        delete_confirmation_template = 'admin/dragoman_blog/delete_confirmation.html'
+        change_list_template = 'admin/dragoman_blog/change_list.html'
         list_display = ('title', 'language_code')
 
         def change_view(self, request, object_id, form_url='', extra_context=None):
@@ -109,8 +109,8 @@ def make_translation_admin(translationmodel,
     class SharedAdmin(GetLanguageMixin, SharedAdminBase):
         language_field = 'language_code'
 
-        change_form_template = 'admin/hvad_blog/change_form.html'
-        delete_confirmation_template = 'admin/hvad_blog/delete_confirmation.html'
+        change_form_template = 'admin/dragoman_blog/change_form.html'
+        delete_confirmation_template = 'admin/dragoman_blog/delete_confirmation.html'
         
         translation_model_map = {}
         

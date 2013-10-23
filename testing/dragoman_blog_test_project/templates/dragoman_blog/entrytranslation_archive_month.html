@@ -1,15 +1,15 @@
-{% extends "hvad_blog/hvad_blog_base.html" %}
+{% extends "dragoman_blog/dragoman_blog_base.html" %}
 {% load i18n %}
 
 {% block content %}
 
-
-<h1>{% trans "Entries for" %} {{ day|date:"d F Y" }}</h1>
+<h1>{% trans "Entries for" %} {{ month|date:"F Y" }}</h1>
 
 {% if object_list %}
    {% include "hvad_blog/entrytranslation_list_include.html" %}
 {% else %}
-	<p>{% trans "No entries for this day" %}</p>
+	<p>{% trans "No entries for this month" %}</p>
 {% endif %}
+
 
 {% endblock %}

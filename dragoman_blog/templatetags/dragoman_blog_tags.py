@@ -2,7 +2,7 @@ from django import template
 
 register = template.Library()
 
-@register.inclusion_tag('admin/hvad_blog/submit_line.html', takes_context=True)
+@register.inclusion_tag('admin/dragoman_blog/submit_line.html', takes_context=True)
 def submit_row(context):
     """
     Displays the row of buttons for delete and save.
