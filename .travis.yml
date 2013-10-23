@@ -5,26 +5,26 @@ python:
     - 3.3
 env:
     - DJANGO=1.5 DATABASE_URL='sqlite://localhost/:memory:'
-    - DJANGO=1.5 DATABASE_URL='mysql://root@127.0.0.1/ hvadblog_test'
-    - DJANGO=1.5 DATABASE_URL='postgres://postgres@127.0.0.1/ hvadblog_test'
+    - DJANGO=1.5 DATABASE_URL='mysql://root@127.0.0.1/ dragomanblog_test'
+    - DJANGO=1.5 DATABASE_URL='postgres://postgres@127.0.0.1/ dragomanblog_test'
     - DJANGO=trunk DATABASE_URL='sqlite://localhost/:memory:'
-    - DJANGO=trunk DATABASE_URL='mysql://root@127.0.0.1/ hvadblog_test'
-    - DJANGO=trunk DATABASE_URL='postgres://postgres@127.0.0.1/ hvadblog_test'
+    - DJANGO=trunk DATABASE_URL='mysql://root@127.0.0.1/ dragomanblog_test'
+    - DJANGO=trunk DATABASE_URL='postgres://postgres@127.0.0.1/ dragomanblog_test'
     
 before_script:
-  - sh -c "if [ '$DATABASE_URL' = 'postgres://postgres@127.0.0.1/ hvadblog_test' ]; then psql -c 'DROP DATABASE IF EXISTS hvadblog_test;' -U postgres; fi"
-  - sh -c "if [ '$DATABASE_URL' = 'postgres://postgres@127.0.0.1/ hvadblog_test' ]; then psql -c 'create database hvadblog_test;' -U postgres; fi"
-  - sh -c "if [ '$DATABASE_URL' = 'mysql://root@127.0.0.1/ hvadblog_test' ]; then mysql -e 'create database IF NOT EXISTS hvadblog_test CHARACTER SET utf8 COLLATE utf8_general_ci;'; fi"
+  - sh -c "if [ '$DATABASE_URL' = 'postgres://postgres@127.0.0.1/ dragomanblog_test' ]; then psql -c 'DROP DATABASE IF EXISTS dragomanblog_test;' -U postgres; fi"
+  - sh -c "if [ '$DATABASE_URL' = 'postgres://postgres@127.0.0.1/ dragomanblog_test' ]; then psql -c 'create database dragomanblog_test;' -U postgres; fi"
+  - sh -c "if [ '$DATABASE_URL' = 'mysql://root@127.0.0.1/ dragomanblog_test' ]; then mysql -e 'create database IF NOT EXISTS dragomanblog_test CHARACTER SET utf8 COLLATE utf8_general_ci;'; fi"
 
 install:
     - pip install -q -r "test_requirements/django-$DJANGO.txt" --use-mirrors
-    - if [ $DATABASE_URL == 'mysql://root@127.0.0.1/ hvadblog_test' ]; then pip install -q mysql-python --use-mirrors; fi
+    - if [ $DATABASE_URL == 'mysql://root@127.0.0.1/ dragomanblog_test' ]; then pip install -q mysql-python --use-mirrors; fi
 script:
     python develop.py test
 
 matrix:
   exclude:
     - python: 3.3
-      env: DJANGO=1.5 DATABASE_URL='mysql://root@127.0.0.1/ hvadblog_test'
+      env: DJANGO=1.5 DATABASE_URL='mysql://root@127.0.0.1/ dragomanblog_test'
     - python: 3.3
-      env: DJANGO=trunk DATABASE_URL='mysql://root@127.0.0.1/ hvadblog_test'
+      env: DJANGO=trunk DATABASE_URL='mysql://root@127.0.0.1/ dragomanblog_test'

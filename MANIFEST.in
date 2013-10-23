@@ -1,4 +1,4 @@
-recursive-include hvad_blog/templates *
-recursive-include hvad_blog/locale *
-recursive-include hvad_blog/static *
+recursive-include dragoman_blog/templates *
+recursive-include dragoman_blog/locale *
+recursive-include dragoman_blog/static *
 include README.rst

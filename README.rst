@@ -1,12 +1,12 @@
-================
-django-hvad-blog
-================
+====================
+django-dragoman-blog
+====================
 
-A internationalized blog using django-hvad.
+A internationalized blog.
 
-Todo: Docs can be found at http://django-hvad-blog.readthedocs.org/ 
+Todo: Docs can be found at http://django-dragoman-blog.readthedocs.org/ 
 
-Todo: Translation project at transifex: http://www.transifex.net/projects/p/django-hvad-blog/
+Todo: Translation project at transifex: http://www.transifex.net/projects/p/django-dragoman-blog/
 
 Installation
 ------------
@@ -15,13 +15,13 @@ For the current stable version:
 
 ::
 
-    pip install django-hvad-blog # no pypi yet
+    pip install django-dragoman-blog # no pypi yet
 
 For the development version:
 
 ::
 
-    pip install -e git+git://github.com/fivethreeo/django-hvad-blog.git@develop#egg=django-hvad-blog
+    pip install -e git+git://github.com/fivethreeo/django-dragoman-blog.git@develop#egg=django-dragoman-blog
 
 Configuration
 -------------
@@ -31,9 +31,8 @@ Settings
 
 Add ::
 
-    'hvad_blog',
+    'dragoman_blog',
     'taggit',
-    'hvad'
 
 To INSTALLED_APPS.
 
@@ -56,7 +55,7 @@ Add ::
     from django.conf.urls.i18n import i18n_patterns
     
     urlpatterns += i18n_patterns('',
-        url(r'^blog/', include('hvad_blog.urls'))
+        url(r'^blog/', include('dragoman_blog.urls'))
     )
 
 To your project roots urls.py
@@ -67,8 +66,8 @@ To join in development
 
 ::
 
-    git clone https://github.com/fivethreeo/django-hvad-blog.git
-    cd django-hvad-blog
+    git clone https://github.com/fivethreeo/django-dragoman-blog.git
+    cd django-dragoman-blog
     
     virtualenv --system-site-packages env
     env/bin/activate
@@ -85,7 +84,7 @@ django-easytests
 ================
 
 * put apps/projects in testing/
-* reusable test utils for 3rd party in hvad_blog/test_utils/ if needed
+* reusable test utils for 3rd party in dragoman_blog/test_utils/ if needed
 * see develop.py
 
 Todo:
