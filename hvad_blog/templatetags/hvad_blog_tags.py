@@ -26,6 +26,8 @@ def submit_row(context):
     }
     if context.get('original') is not None:
         ctx['original'] = context['original']
-    if context.get('language_tabs_code') is not None:
-        ctx['language_tabs_code'] = context['language_tabs_code']
+    if context.get('translation_language_code') is not None:
+        ctx['translation_language_code'] = context['translation_language_code']
+    if context.get('translation_language_field') is not None:
+        ctx['translation_language_field'] = context['translation_language_field']
     return ctx

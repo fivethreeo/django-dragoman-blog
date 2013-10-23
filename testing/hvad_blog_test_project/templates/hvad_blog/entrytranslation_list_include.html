@@ -1,5 +1,5 @@
 {% load i18n  %}
 {% for entry in object_list %}
-    <p>{{ entry.pub_date|date:"d b Y" }}<br/><a href="{{ entry.master.get_absolute_url }}">{{ entry.title }}</a>
+    <p>{{ entry.pub_date|date:"d b Y" }}<br/><a href="{{ entry.get_absolute_url }}">{{ entry.title }}</a>
     </p>
 {% endfor %}

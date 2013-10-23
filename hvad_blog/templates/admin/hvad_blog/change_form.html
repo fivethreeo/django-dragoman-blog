@@ -4,6 +4,7 @@
 {% block extrahead %}
 {{ block.super }}
 <style type="text/css">
+
 .hvad-blog-language-tabs span {
     display: inline-block;
     padding: 5px 15px;
@@ -15,10 +16,10 @@
     font-weight: bold;
 }
 .hvad-blog-language-tabs span.current {
-    border-bottom: 1px solid #fff;
+    padding-top: 9px;
 }
 .hvad-blog-language-tabs span.empty {
-    opacity: 0.7;
+    opacity: 0.6;
     font-weight: normal;
 }
 .hvad-blog-language-tabs a.deletelink {
@@ -34,22 +35,22 @@
 <div class="breadcrumbs">
 <a href="{% url 'admin:index' %}">{% trans 'Home' %}</a>
 &rsaquo; <a href="{% url 'admin:app_list' app_label=opts.app_label %}">{{ app_label|capfirst|escape }}</a>
-&rsaquo; {% if has_change_permission %}<a href="{% url opts|admin_urlname:'changelist' %}?language_code__exact={{ language_tabs_code }}">{{ opts.verbose_name_plural|capfirst }}</a>{% else %}{{ opts.verbose_name_plural|capfirst }}{% endif %}
+&rsaquo; {% if has_change_permission %}<a href="{% url opts|admin_urlname:'changelist' %}?{{ translation_language_field }}__exact={{ translation_language_code }}">{{ opts.verbose_name_plural|capfirst }}</a>{% else %}{{ opts.verbose_name_plural|capfirst }}{% endif %}
 &rsaquo; {% if add %}{% trans 'Add' %} {{ opts.verbose_name }}{% else %}{{ original|truncatewords:"18" }}{% endif %}
 </div>
 {% endblock %}
 {% endif %}
 
-{% block after_related_objects %}<input type="hidden" name="language_code" value="{{ language_tabs_code }}" />{% endblock %}
+{% block after_related_objects %}    <input type="hidden" name="{{ translation_language_field }}" value="{{ translation_language_code }}" />    {% endblock %}
 {% block submit_buttons_bottom %}{% submit_row %}{% endblock %}
 
 {% block object-tools %}
 {{ block.super }}
 <div class="hvad-blog-language-tabs">
     {% for code, tab in language_tabs.items %}
-       <span>
+       <span class="{% if tab.current %}current{% endif %}{% if not tab.id %} empty{% endif %}">
            {% if not object_id %}
-               <a href="{% url 'admin:hvad_blog_entrytranslation_add' %}?language_code={{code}}">{{ tab.name }}</a>
+               <a href="{% url 'admin:hvad_blog_entry_add' %}?language_code={{code}}">{{ tab.name }}</a>
            {% else %}
                <a href="{% url 'admin:hvad_blog_entry_change' object_id %}?language_code={{code}}">{{ tab.name }}</a>
                {% if allow_deletion %}<a class="deletelink" href="{% url 'admin:hvad_blog_entrytranslation_delete' tab.id %}?language_code={{code}}" title="{% trans 'Delete Translation' %}">&nbsp;</a>{% endif %}

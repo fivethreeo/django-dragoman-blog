@@ -51,7 +51,9 @@ class TranslationTagged(GenericTaggedItemBase):
         return cls.tag_model().objects.filter(**kwargs).distinct()
         
 class Entry(models.Model):
-    pass
+    
+    def __unicode__(self):
+        return getattr(self, 'title', 'Untranslated')
     
 class EntryTranslation(models.Model):
     
