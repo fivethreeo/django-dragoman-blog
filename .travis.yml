@@ -18,8 +18,8 @@ before_script:
 
 install:
     - pip install -q -r "testing/requirements/django-$DJANGO.txt" --use-mirrors
-    - if [ $DB == 'mysql://root@127.0.0.1/dragomanblog_test' ]; then pip install -q mysql-python --use-mirrors; fi
-    - if [ $DB == 'postgres://postgres@127.0.0.1/dragomanblog_test' ]; then pip install -q psycopg2==2.4 --use-mirrors; fi
+    - if [ '$DB' == 'mysql://root@127.0.0.1/dragomanblog_test' ]; then pip install -q mysql-python --use-mirrors; fi
+    - if [ '$DB' == 'postgres://postgres@127.0.0.1/dragomanblog_test' ]; then pip install -q psycopg2==2.4 --use-mirrors; fi
 script:
     DATABASE_URL=$DB python develop.py test
 
