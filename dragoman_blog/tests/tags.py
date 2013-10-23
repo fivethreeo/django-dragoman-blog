@@ -16,7 +16,7 @@ class TwoLanguageTagsTest(FixtureTestCase, TwoLanguage):
             
     def setUp(self):
         super(TwoLanguageTagsTest, self).setUp()
-        en = EntryTranslation.objects.get(language_code='en', maste=1)
+        en = EntryTranslation.objects.get(language_code='en', master=1)
         en.tags.add('some', 'english', 'tags')    
         ja = EntryTranslation.objects.get(language_code='ja', master=1)
         ja.tags.add('ooh', 'japanese', 'othertags')    
