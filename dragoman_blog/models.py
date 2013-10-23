@@ -82,7 +82,7 @@ class EntryTranslation(models.Model):
 
         local_pub_date = timezone.localtime(pub_date)
     
-        return ('hvad_blog_detail', (), {
+        return ('dragoman_blog_detail', (), {
             'year': local_pub_date.year,
             'month': local_pub_date.strftime('%m'),
             'day': local_pub_date.strftime('%d'),

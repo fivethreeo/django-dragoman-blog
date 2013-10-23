@@ -7,7 +7,7 @@
 <h1>{% trans "Entries for" %} {{ day|date:"d F Y" }}</h1>
 
 {% if object_list %}
-   {% include "hvad_blog/entrytranslation_list_include.html" %}
+   {% include "dragoman_blog/entrytranslation_list_include.html" %}
 {% else %}
 	<p>{% trans "No entries for this day" %}</p>
 {% endif %}

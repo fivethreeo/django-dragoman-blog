@@ -47,16 +47,16 @@ blog_detail = EntryDateDetail.as_view(
 )
 
 urlpatterns = patterns('',
-    url(r'^$', EntryArchiveIndex.as_view(**blog_info_dict), name='hvad_blog_archive_index'),
+    url(r'^$', EntryArchiveIndex.as_view(**blog_info_dict), name='dragoman_blog_archive_index'),
     
-    url(r'^(?P<year>\d{4})/$', EntryYearArchive.as_view(**blog_info_dict), name='hvad_blog_archive_year'),
+    url(r'^(?P<year>\d{4})/$', EntryYearArchive.as_view(**blog_info_dict), name='dragoman_blog_archive_year'),
     
     url(r'^(?P<year>\d{4})/(?P<month>\d{2})/$',
-        EntryMonthArchive.as_view(month_format='%m', **blog_info_dict), name='hvad_blog_archive_month'),
+        EntryMonthArchive.as_view(month_format='%m', **blog_info_dict), name='dragoman_blog_archive_month'),
     
     url(r'^(?P<year>\d{4})/(?P<month>\d{2})/(?P<day>\d{2})/$',
-        EntryDayArchive.as_view(month_format='%m', **blog_info_dict), name='hvad_blog_archive_day'),
+        EntryDayArchive.as_view(month_format='%m', **blog_info_dict), name='dragoman_blog_archive_day'),
     
     url(r'^(?P<year>\d{4})/(?P<month>\d{2})/(?P<day>\d{2})/(?P<slug>[-\w]+)/$',
-        blog_detail, name='hvad_blog_detail')
+        blog_detail, name='dragoman_blog_detail')
 )

@@ -1,34 +1,35 @@
-from hvad.test_utils.context_managers import LanguageOverride, SettingsOverride
-from hvad.test_utils.testcase import NaniTestCase
-from hvad_blog.models import Entry
 from django.core.urlresolvers import reverse
-from hvad.test_utils.request_factory import RequestFactory
-from .fixtures import *
+from django.utils import translation
 
-class OneLanguageViewsTest(NaniTestCase, OneLanguage):
+from dragoman_blog.test_utils.fixtures import *
+from dragoman_blog.test_utils.testcase import FixtureTestCase
+
+from dragoman_blog.models import Entry, EntryTranslation
+
+class OneLanguageViewsTest(FixtureTestCase, OneLanguage):
 
     def test_index_view(self):
-        with LanguageOverride("en"):
-            response = self.client.get(reverse('hvad_blog_archive_index'))
+        with translation.override("en"):
+            response = self.client.get(reverse('dragoman_blog_archive_index'))
             self.assertEquals(response.status_code, 200)
             self.assertContains(response, 'english')  # links
             
-        with LanguageOverride("ja"):
-            response = self.client.get(reverse('hvad_blog_archive_index'))
+        with translation.override("ja"):
+            response = self.client.get(reverse('dragoman_blog_archive_index'))
             self.assertEquals(response.status_code, 200)
             self.assertNotContains(response, 'japanese') # no links       
         
 
-class TwoLanguageViewsTest(NaniTestCase, TwoLanguage):
+class TwoLanguageViewsTest(FixtureTestCase, TwoLanguage):
 
     def test_index_view(self):
-        with LanguageOverride("en"):
-            response = self.client.get(reverse('hvad_blog_archive_index'))
+        with translation.override("en"):
+            response = self.client.get(reverse('dragoman_blog_archive_index'))
             self.assertEquals(response.status_code, 200)
             self.assertContains(response, 'english')  # links
             
-        with LanguageOverride("ja"):
-            response = self.client.get(reverse('hvad_blog_archive_index'))
+        with translation.override("ja"):
+            response = self.client.get(reverse('dragoman_blog_archive_index'))
             self.assertEquals(response.status_code, 200)
             self.assertContains(response, 'japanese') # links       
         
