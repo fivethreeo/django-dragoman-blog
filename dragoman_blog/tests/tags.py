@@ -16,9 +16,9 @@ class TwoLanguageTagsTest(FixtureTestCase, TwoLanguage):
             
     def setUp(self):
         super(TwoLanguageTagsTest, self).setUp()
-        en = EntryTranslation.objects.get(language_code='en', master_id=1)
+        en = EntryTranslation.objects.get(language_code='en', maste=1)
         en.tags.add('some', 'english', 'tags')    
-        ja = EntryTranslation.objects.get(language_code='ja', master_id=1)
+        ja = EntryTranslation.objects.get(language_code='ja', master=1)
         ja.tags.add('ooh', 'japanese', 'othertags')    
             
     def test_tags_created(self):
@@ -27,8 +27,8 @@ class TwoLanguageTagsTest(FixtureTestCase, TwoLanguage):
         self.assertEqual(TranslationTagged.objects.count(), 6)
 
     def test_tags_get_attr(self):
-        en = EntryTranslation.objects.get(language_code='en', master_id=1)
-        ja = EntryTranslation.objects.get(language_code='ja', master_id=1)
+        en = EntryTranslation.objects.get(language_code='en', master=1)
+        ja = EntryTranslation.objects.get(language_code='ja', master=1)
         self.assertEqual(list(en.tags.names()).sort(), [u'english', u'some', u'tags'].sort())   
         self.assertEqual(list(ja.tags.names()).sort(), [u'ooh', u'japanese', u'othertags'].sort())       
 
