@@ -1,3 +1,6 @@
+
+.. image:: https://travis-ci.org/fivethreeo/django-dragoman-blog.png?branch=develop   :target: https://travis-ci.org/fivethreeo/django-dragoman-blog
+
 ====================
 django-dragoman-blog
 ====================
