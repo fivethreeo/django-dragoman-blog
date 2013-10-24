@@ -7,9 +7,9 @@ env:
     - DJANGO=1.5 DB='sqlite://localhost/:memory:'
     - DJANGO=1.5 DB='mysql://root@127.0.0.1/dragomanblog_test'
     - DJANGO=1.5 DB='postgres://postgres@127.0.0.1/dragomanblog_test'
-    - DJANGO=trunk DB='sqlite://localhost/:memory:'
-    - DJANGO=trunk DB='mysql://root@127.0.0.1/dragomanblog_test'
-    - DJANGO=trunk DB='postgres://postgres@127.0.0.1/dragomanblog_test'
+#    - DJANGO=trunk DB='sqlite://localhost/:memory:'
+#    - DJANGO=trunk DB='mysql://root@127.0.0.1/dragomanblog_test'
+#    - DJANGO=trunk DB='postgres://postgres@127.0.0.1/dragomanblog_test'
     
 before_script:
   - sh -c "if [ '$DB' = 'postgres://postgres@127.0.0.1/dragomanblog_test' ]; then psql -c 'DROP DATABASE IF EXISTS dragomanblog_test;' -U postgres; fi"
