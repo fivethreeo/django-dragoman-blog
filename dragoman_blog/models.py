@@ -4,6 +4,7 @@ from django.utils.translation import get_language
 
 from django.db import models
 from django.contrib.contenttypes.models import ContentType
+from django.conf import settings
 
 from taggit.models import GenericTaggedItemBase
 
