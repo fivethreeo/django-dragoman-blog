@@ -1,3 +1,4 @@
+from django.utils.translation import ugettext as _
 from dragoman_blog.model_bases import BaseEntry, BaseEntryTranslation
 
 class Entry(BaseEntry):
