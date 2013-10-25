@@ -43,6 +43,8 @@ class GetLanguageMixin(object):
 
 class AtLeastOneRequiredInlineFormSet(BaseInlineFormSet):
 
+    error_msg = 'At least one item required.'
+
     def clean(self):
         """Check that at least one inline has been filled."""
         super(AtLeastOneRequiredInlineFormSet, self).clean()
@@ -50,8 +52,12 @@ class AtLeastOneRequiredInlineFormSet(BaseInlineFormSet):
             return
         if not any(cleaned_data and not cleaned_data.get('DELETE', False)
             for cleaned_data in self.cleaned_data):
-            raise forms.ValidationError('Translation required, fill in fields or switch language.')
-                            
+            raise forms.ValidationError(self.error_msg)
+            
+class AtLeastOneTranslationRequiredInlineFormSet(AtLeastOneRequiredInlineFormSet):
+
+    error_msg = 'Translation required, fill in fields or switch language.'
+                                                
 def make_translation_admin(translationmodel,
     SharedAdminBase=admin.ModelAdmin,
     TranslationAdminBase=admin.ModelAdmin,
@@ -71,15 +77,17 @@ def make_translation_admin(translationmodel,
         max_num = 1
         model = translationmodel
         template = 'admin/dragoman_blog/stacked_inline.html'
-        formset = AtLeastOneRequiredInlineFormSet
+        formset = AtLeastOneTranslationRequiredInlineFormSet
                     
-    class TranslationAdmin(GetLanguageMixin, TranslationAdminBase):
+    class BaseTranslationAdmin(GetLanguageMixin, TranslationAdminBase):
         language_field = 'language_code'
 
-        list_filter = ('language_code',)
         delete_confirmation_template = 'admin/dragoman_blog/delete_confirmation.html'
         change_list_template = 'admin/dragoman_blog/change_list.html'
-        list_display = ('title', 'language_code')
+        
+        def __init__(self, model, admin_site, sharedadmin):
+            self.sharedadmin = sharedadmin
+            return super(BaseTranslationAdmin, self).__init__(model, admin_site)
 
         def change_view(self, request, object_id, form_url='', extra_context=None):
             "The 'change' admin view for this model."
@@ -93,18 +101,26 @@ def make_translation_admin(translationmodel,
     
             if obj is None:
                 raise Http404(_('%(name)s object with primary key %(key)r does not exist.') % {'name': force_unicode(opts.verbose_name), 'key': escape(object_id)})
-            return HttpResponseRedirect(reverse('admin:hvad_blog_entry_change', args=[obj.master.pk])+'?language_code='+obj.language_code)
+            qs = '?'+self.language_field+'='+getattr(obj, self.language_field)
+            shared_pk = getattr(obj, self.sharedadmin.translation_of_field).pk
+            info = self.sharedadmin.model._meta.app_label, self.sharedadmin.model.__name__.lower()
+            urlname = 'admin:%s_%s_change' % info
+            return HttpResponseRedirect(reverse(urlname, args=[shared_pk])+qs)
     
         def changelist_view(self, request, extra_context={}):
             extra_context.update(self.get_language_request(request, as_dict=True, suffix='__exact'))
-            return super(TranslationAdmin, self).changelist_view(request, extra_context=extra_context)
+            return super(BaseTranslationAdmin, self).changelist_view(request, extra_context=extra_context)
                     
         def delete_view(self, request, object_id, extra_context={}):
             extra_context.update(self.get_language_request(request, as_dict=True))      
-            resp =  super(TranslationAdmin, self).delete_view(request, object_id, extra_context=extra_context)
+            resp =  super(BaseTranslationAdmin, self).delete_view(request, object_id, extra_context=extra_context)
             if 'Location' in resp:
                 resp['Location'] = resp['Location']+'?'+self.get_language_request(request, as_qs=True)
             return resp
+            
+    class TranslationAdmin(BaseTranslationAdmin):
+        list_display = ('title', 'language_code')
+        list_filter = ('language_code',)
 
     class SharedAdmin(GetLanguageMixin, SharedAdminBase):
         language_field = 'language_code'
@@ -116,10 +132,11 @@ def make_translation_admin(translationmodel,
         
         def __init__(self, model, admin_site):
             super(SharedAdmin, self).__init__(model, admin_site)
-            self.translation_admin = self.translation[1](self.translation[0], admin_site)
+
+            self.translation_admin = self.translation[1](self.translation[0], admin_site, self)
             self.inlines.insert(0, self.translation[2])
-            self.translation_model = self.translation[0]
-    
+            self.translation_model = self.translation[0] 
+                
             for inline in self.inlines:
                 if issubclass(inline, BaseTranslationInline):
                     self.translation_model_map[inline.model] = inline.language_field
@@ -127,7 +144,8 @@ def make_translation_admin(translationmodel,
             for related_object in self.model._meta.get_all_related_objects():
                 if related_object.model == self.translation_model:
                     self.translation_accessor = related_object.get_accessor_name()
-                        
+                    self.translation_of_field = related_object.field.name
+                     
         translation = (translationmodel, TranslationAdmin, TranslationInline)
         
         def get_object(self, request, object_id):
