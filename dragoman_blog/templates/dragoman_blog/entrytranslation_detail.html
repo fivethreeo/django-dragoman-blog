@@ -6,6 +6,15 @@
 
 <h1>{{ object.title }}</h1>
 
+{% for translation in object.master.entrytranslation_set.all %}
+    {% if forloop.first %}{% trans "Also available in:" %}{% endif %}
+    {% language translation.language_code %}
+    {% if translation.language_code == object.language_code %}
+    {% else %}
+    <a href="{{ translation.get_absolute_url }}">{{ translation.language_code|language_name_local }} ({{ translation.language_code|language_name }})</a>
+    {% endif %}
+    {% endlanguage %}
+{% endfor %}
 <p class="date"><span>{{ object.pub_date|date:"d F Y" }}</span></p>
 
 
