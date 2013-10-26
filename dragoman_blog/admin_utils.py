@@ -134,7 +134,7 @@ def make_translation_admin(translationmodel,
             super(SharedAdmin, self).__init__(model, admin_site)
 
             self.translation_admin = self.translation[1](self.translation[0], admin_site, self)
-            self.inlines.insert(0, self.translation[2])
+            self.inlines = [self.translation[2]] + self.inlines
             self.translation_model = self.translation[0] 
                 
             for inline in self.inlines:
