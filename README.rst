@@ -24,7 +24,7 @@ For the development version:
 
 ::
 
-    pip install -e git+git://github.com/fivethreeo/django-dragoman-blog.git@develop#egg=django-dragoman-blog
+    pip install https://github.com/fivethreeo/django-dragoman-blog/archive/develop.zip
 
 Configuration
 -------------
@@ -64,16 +64,10 @@ Add ::
 
 To your projects root urls.py
 
-Django CMS plugin app
-=====================
+Django CMS plugin app, do none of the above
+===========================================
 
-Remove ``dragoman_blog_admin`` from INSTALLED_APPS.
-
-Add ``cmsplugin_dragoman`` to INSTALLED_APPS.
-
-Set ``settings.DRAGOMAN_BLOG_ENTRY_MODEL`` to ``cmsplugin_dragoman.dragoman_models.Entry``.
-
-Do NOT add the urlpatterns, use the included apphook instead.
+https://github.com/fivethreeo/cmsplugin-dragoman
 
 To join in development
 ----------------------
