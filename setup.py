@@ -20,10 +20,10 @@ setup(
     long_description=open(os.path.join(os.path.dirname(__file__), 'README.rst')).read(),
     author='Oyvind Saltvik',
     author_email='oyvind.saltvik@gmail.com',
-    url='http://github.com/fivethreeo/django-hvad-blog/',
+    url='http://github.com/fivethreeo/django-dragoman-blog/',
     packages=find_packages(),
     package_data={
-        'hvad_blog': [
+        'dragoman_blog': [
             'static/dragoman_blog/*',
             'locale/*/LC_MESSAGES/*',
         ]

@@ -229,5 +229,5 @@ def make_translation_admin(translationmodel,
             super(SharedAdmin, self).save_formset(request, form, formset, change)
             
     if return_parts:
-        return SharedAdmin, TranslationAdmin, BaseTranslationInline, TranslationInline    
+        return SharedAdmin, TranslationAdmin, TranslationInline, BaseTranslationAdmin, BaseTranslationInline    
     return SharedAdmin
