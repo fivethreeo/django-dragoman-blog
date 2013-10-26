@@ -35,6 +35,7 @@ Settings
 Add ::
 
     'dragoman_blog',
+    'dragoman_blog_admin',
     'taggit',
 
 To INSTALLED_APPS.
@@ -61,8 +62,18 @@ Add ::
         url(r'^blog/', include('dragoman_blog.urls'))
     )
 
-To your project roots urls.py
+To your projects root urls.py
 
+Django CMS plugin app
+=====================
+
+Remove ``dragoman_blog_admin`` from INSTALLED_APPS.
+
+Add ``cmsplugin_dragoman`` to INSTALLED_APPS.
+
+Set ``settings.DRAGOMAN_BLOG_ENTRY_MODEL`` to ``cmsplugin_dragoman.dragoman_models.Entry``.
+
+Do NOT add the urlpatterns, use the included apphook instead.
 
 To join in development
 ----------------------
