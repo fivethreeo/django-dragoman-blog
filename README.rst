@@ -105,8 +105,8 @@ Todo:
 django-cms integration
 ''''''''''''''''''''''
 
-App with apphook and plugins, replaced model with placeholder(s).
-Abstract model + default model ala django-shop, hooks for model replacement.
+Done @ https://github.com/fivethreeo/cmsplugin-dragoman
+
 
 django-taggit-classy-templatetags
 '''''''''''''''''''''''''''''''''
