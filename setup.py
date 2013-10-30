@@ -24,6 +24,7 @@ setup(
     packages=find_packages(),
     package_data={
         'dragoman_blog': [
+            'templates/dragoman_blog/*',
             'static/dragoman_blog/*',
             'locale/*/LC_MESSAGES/*',
         ]
