@@ -5,7 +5,6 @@ import dragoman_blog
 from djeasytests.testsetup import TestSetup
 
 settings = {
-    'DEBUG': True,
     'SITE_ID': 1,
     'STATIC_URL': '/static/', 
     'INSTALLED_APPS': [
