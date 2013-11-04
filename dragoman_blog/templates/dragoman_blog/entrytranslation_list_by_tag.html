@@ -1,0 +1,14 @@
+{% extends "dragoman_blog/dragoman_blog_base.html" %}
+{% load i18n %}
+
+{% block content %}
+
+<h1>{% trans "Latest entries by tag" %} {{ tag }}</h1>
+
+{% if object_list %}
+	{% include "dragoman_blog/entrytranslation_list_include.html" %}
+{% else %}
+	<p>{% trans "No entries" %}</p>
+{% endif %}
+
+{% endblock %}
