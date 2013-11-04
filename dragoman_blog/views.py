@@ -16,7 +16,7 @@ class ListByTagView(ListView):
             tag = ''
         if (tag != ''):
             object_list = self.model.objects.filter(
-                tags__name=tag, language_code=get_language())
+                tags__name=tag, language_code=get_language(), is_published=True)
         else:
             object_list = self.model.objects.none()
         return object_list
