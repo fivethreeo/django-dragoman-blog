@@ -1,5 +1,6 @@
 from dragoman_blog.models import EntryTranslation
 from django.views.generic.list import ListView
+from django.utils.translation import get_language
 
 
 class ListByTagView(ListView):
@@ -14,7 +15,8 @@ class ListByTagView(ListView):
         except:
             tag = ''
         if (tag != ''):
-            object_list = self.model.objects.filter(tags__name=tag)
+            object_list = self.model.objects.filter(
+                tags__name=tag, language_code=get_language())
         else:
             object_list = self.model.objects.none()
         return object_list
