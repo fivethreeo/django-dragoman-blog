@@ -10,10 +10,7 @@ class ListByTagView(ListView):
     model = EntryTranslation
 
     def get_queryset(self):
-        try:
-            tag = self.kwargs['tag']
-        except:
-            tag = ''
+        tag = self.kwargs.get('tag', '')
         if (tag != ''):
             object_list = self.model.objects.filter(
                 tags__name=tag, language_code=get_language(), is_published=True)
@@ -23,5 +20,5 @@ class ListByTagView(ListView):
 
     def get_context_data(self, **kwargs):
         context = super(ListByTagView, self).get_context_data(**kwargs)
-        context['tag'] = self.kwargs['tag']
+        context['tag'] = self.kwargs.get('tag', '')
         return context
